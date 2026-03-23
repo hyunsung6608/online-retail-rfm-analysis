@@ -90,6 +90,11 @@ These results demonstrate how RFM analysis can be used to identify high-value cu
 
 RFM scoring and segmentation were applied to classify customers into meaningful groups such as VIP, Normal, and Big Spender.
 
+## 📊 Visualization
+
+### Customer Segmentation Distribution
+![Segment Distribution](images/segment_distribution.png)
+
 ## 7. Tech Stack
 
 - **Python**
