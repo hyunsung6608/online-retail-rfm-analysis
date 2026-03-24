@@ -90,10 +90,30 @@ These results demonstrate how RFM analysis can be used to identify high-value cu
 
 RFM scoring and segmentation were applied to classify customers into meaningful groups such as VIP, Normal, and Big Spender.
 
-## 📊 Visualization
+## 📊 Visualization (Python)
 
-### Customer Segmentation Distribution
 ![Segment Distribution](images/segment_distribution.png)
+
+Initial visualization of customer segment distribution derived from RFM analysis, providing a baseline understanding before building the interactive dashboard.
+
+## 📊 Tableau Dashboard
+
+![RFM Dashboard](images/dashboard.png)
+
+The Tableau dashboard presents an interactive view of customer segmentation based on RFM metrics.  
+It includes:
+
+- Customer Segment Distribution  
+- RFM Scatter Analysis (Frequency vs Monetary with Recency as size)  
+- Revenue Contribution by Segment  
+
+Users can interact with the dashboard using segment filters to explore customer behavior and identify high-value or at-risk customer groups.
+
+### 🔍 Key Insights
+
+- VIP customers represent a small portion but contribute significantly to total revenue.  
+- Normal customers form the majority but have lower individual value.  
+- Segment-based analysis enables targeted marketing strategies.
 
 ## 7. Tech Stack
 
@@ -105,13 +125,18 @@ RFM scoring and segmentation were applied to classify customers into meaningful 
 - **MySQL**
 - **Jupyter Notebook**
 - **Matplotlib**
+- **Tableau**
 
 ## 8. Project Structure
 
 ```bash
 online-retail-analysis/
 ├── data/
-│   └── online_retail.csv
+│   ├── online_retail.csv
+│   └── rfm_tableau.csv   
+├── images/
+│   ├── segment_distribution.png
+│   └── dashboard.png     
 ├── notebooks/
 │   └── rfm_analysis.ipynb
 ├── scripts/
@@ -121,7 +146,10 @@ online-retail-analysis/
 │   ├── 02_calculate_frequency.sql
 │   ├── 03_calculate_recency.sql
 │   └── 04_create_rfm_table.sql
+├── Tableau/
+│   └── rfm_dashboard.twbx   
 ├── requirements.txt
+├── .gitignore              
 └── README.md
 ```
 
@@ -164,7 +192,7 @@ jupyter notebook
 
 - Add customer segmentation rules directly in SQL
 
-- Build a dashboard for RFM segment visualization
+- Enhance the dashboard with additional customer-level insights
 
 - Automate the pipeline with scheduled execution
 
