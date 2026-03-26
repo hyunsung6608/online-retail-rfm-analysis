@@ -24,4 +24,7 @@ FROM clean_data c
 CROSS JOIN snapshot s
 GROUP BY c.CustomerID;
 
+ALTER TABLE rfm
+ADD PRIMARY KEY (CustomerID);
+
 SELECT * FROM rfm LIMIT 10;

@@ -1,17 +1,33 @@
 # Online Retail RFM Analysis
 
 ## 1. Project Overview
-This project analyzes customer purchasing behavior using RFM (Recency, Frequency, Monetary) analysis based on the Online Retail dataset.
-A data pipeline was built to preprocess raw data using Python and load it into MySQL, followed by SQL-based analysis to compute customer-level RFM metrics.
-The goal of this project is to identify valuable customer segments and demonstrate an end-to-end data workflow from data preprocessing to analytical querying.
+This project analyzes customer purchasing behavior using RFM (Recency, Frequency, Monetary) analysis on the Online Retail dataset.
 
-## 📊 Project Summary
+Built an end-to-end data analytics pipeline that transforms raw transaction data into actionable customer insights using Python, MySQL, and SQL-based RFM analysis.
 
-- Built an end-to-end data pipeline using Python and MySQL  
-- Performed RFM analysis using both Pandas and SQL  
-- Identified high-value customer segments for business insights
+Demonstrates the ability to identify high-value customer segments and deliver reproducible, data-driven insights from raw transactional data.
 
-## 2. Dataset
+## Project Flow
+Raw CSV → Python Preprocessing → MySQL Loading → SQL-based RFM Analysis → Python/Tableau Visualization
+
+## 2. Project Summary
+
+- Built an end-to-end data pipeline using Python and MySQL
+- Performed RFM analysis to segment customers based on purchasing behavior
+- Identified high-value customer groups for business insights
+
+## 3. Tech Stack
+
+- **Language**: Python, SQL
+- **Data Processing**: Pandas, NumPy
+- **Database**: MySQL
+- **ORM / Connection**: SQLAlchemy, PyMySQL
+- **Visualization**: Matplotlib, Tableau
+- **Environment Management**: python-dotenv
+- **Notebook**: Jupyter Notebook
+- **Development Environment**: VS Code
+
+## 4. Dataset
 This project uses the Online Retail dataset, which contains transactional records of a UK-based online retail company.
 
 Key columns include:
@@ -26,7 +42,7 @@ Key columns include:
 
 This dataset is suitable for RFM analysis because it contains customer-level purchase history, order frequency, and monetary information.
 
-## 3. Data Processing Pipeline
+## 5. Data Processing Pipeline
 The project follows an end-to-end workflow:
 
 1. Load raw transaction data from CSV
@@ -37,8 +53,7 @@ The project follows an end-to-end workflow:
 6. Build a customer-level RFM table
 7. Perform RFM analysis, customer segmentation, and exploratory analysis in Jupyter Notebook
 
-## 4. Data Preprocessing (Python)
-
+## 6. Data Preprocessing (Python)
 The raw dataset was cleaned in Python before loading it into MySQL.
 
 Preprocessing steps:
@@ -54,8 +69,7 @@ The preprocessing logic is implemented in:
 
 After preprocessing, the cleaned data was loaded into MySQL for SQL-based analysis.
 
-## 5. RFM Analysis (Python & SQL)
-
+## 7. RFM Analysis (Python & SQL)
 Customer-level RFM metrics were calculated using both Python and MySQL.
 
 - **Recency**: Number of days since the customer's most recent purchase
@@ -76,8 +90,30 @@ SQL files used:
 - `sql/03_calculate_recency.sql`
 - `sql/04_create_rfm_table.sql`
 
-## 6. Results & Insights
+## 8. Analysis & Visualization
 
+### Python
+Initial visualization was performed in Python to explore customer segment distribution and summarize RFM-based grouping results.
+
+- Segment distribution visualization
+- Exploratory analysis of customer segment counts
+- Baseline summary of customer segmentation before dashboard development
+
+![Segment Distribution](images/segment_distribution.png)
+
+### Tableau
+An interactive Tableau dashboard was created to provide a more intuitive view of customer segmentation and revenue patterns.
+
+The dashboard includes:
+- Customer Segment Distribution
+- RFM Scatter Analysis
+- Revenue Contribution by Segment
+
+Users can interact with the dashboard using filters to explore customer behavior and identify high-value or at-risk customer groups.
+
+![RFM Dashboard](images/dashboard.png)
+
+## 9. Results & Insights
 Key findings from the analysis include:
 
 - The majority of customers fall into the **Normal** segment
@@ -90,110 +126,123 @@ These results demonstrate how RFM analysis can be used to identify high-value cu
 
 RFM scoring and segmentation were applied to classify customers into meaningful groups such as VIP, Normal, and Big Spender.
 
-## 📊 Visualization (Python)
+## 10. Key Results
 
-![Segment Distribution](images/segment_distribution.png)
+- Processed and loaded **397,884** transaction records into MySQL
+- Analyzed **4,338** unique customers
+- Identified a VIP segment comprising only **8.02%** of customers
+- Found that VIP customers contribute **43.82%** of total revenue
+- Revealed a strong Pareto distribution in customer purchasing behavior
 
-Initial visualization of customer segment distribution derived from RFM analysis, providing a baseline understanding before building the interactive dashboard.
-
-## 📊 Tableau Dashboard
-
-![RFM Dashboard](images/dashboard.png)
-
-The Tableau dashboard presents an interactive view of customer segmentation based on RFM metrics.  
-It includes:
-
-- Customer Segment Distribution  
-- RFM Scatter Analysis (Frequency vs Monetary with Recency as size)  
-- Revenue Contribution by Segment  
-
-Users can interact with the dashboard using segment filters to explore customer behavior and identify high-value or at-risk customer groups.
-
-### 🔍 Key Insights
-
-- VIP customers represent a small portion but contribute significantly to total revenue.  
-- Normal customers form the majority but have lower individual value.  
-- Segment-based analysis enables targeted marketing strategies.
-
-## 7. Tech Stack
-
-- **Python**
-- **Pandas**
-- **NumPy**
-- **SQLAlchemy**
-- **PyMySQL**
-- **MySQL**
-- **Jupyter Notebook**
-- **Matplotlib**
-- **Tableau**
-
-## 8. Project Structure
+## 11. Project Structure
 
 ```bash
 online-retail-analysis/
-├── data/
+├── data/                 # Raw dataset and exported RFM data
 │   ├── online_retail.csv
-│   └── rfm_tableau.csv   
-├── images/
+│   └── rfm_tableau.csv
+├── images/               # Visualization images
 │   ├── segment_distribution.png
-│   └── dashboard.png     
-├── notebooks/
+│   └── dashboard.png
+├── notebooks/            # Jupyter notebooks for analysis
 │   └── rfm_analysis.ipynb
-├── scripts/
+├── scripts/              # Data preprocessing and loading scripts
 │   └── preprocess_and_load.py
-├── sql/
+├── sql/                  # SQL queries for RFM calculation
 │   ├── 01_calculate_monetary.sql
 │   ├── 02_calculate_frequency.sql
 │   ├── 03_calculate_recency.sql
 │   └── 04_create_rfm_table.sql
-├── Tableau/
-│   └── rfm_dashboard.twbx   
+├── tableau/              # Tableau dashboard file
+│   └── rfm_dashboard.twbx
 ├── requirements.txt
-├── .gitignore              
+├── .env.example
+├── .gitignore
 └── README.md
 ```
 
-## 9. How to Run
-### 1) Install dependencies
+## 12. How to Run
+
+### 1) Clone the repository
+
+```bash
+git clone https://github.com/hyunsung6608/online-retail-rfm-analysis.git
+cd online-retail-rfm-analysis
+```
+
+### 2) Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
-### 2) Prepare MySQL database
 
-Create a database named retail_project in MySQL.
+### 3) Prepare MySQL database
 
-### 3) Update database connection
+Create a database named `retail_project` in MySQL.
 
-Edit the connection string in scripts/preprocess_and_load.py:
-
-```python
-engine = create_engine("mysql+pymysql://root:YOUR_PASSWORD@localhost/retail_project")
-```
-### 4) Run preprocessing script
 ```bash
-python scripts/preprocess_and_load.py
+mysql -u your_username -p
 ```
-### 5) Execute SQL files
 
-Run the SQL files in the sql/ directory in order:
+```sql
+CREATE DATABASE retail_project;
+```
 
-01_calculate_monetary.sql
+### 4) Set up environment variables
 
-02_calculate_frequency.sql
+Create a `.env` file in the project root based on `.env.example`:
 
-03_calculate_recency.sql
+```bash
+# macOS / Linux
+cp .env.example .env
 
-04_create_rfm_table.sql
+# Windows
+copy .env.example .env
+```
 
-### 6) Run Jupyter Notebook
+Then edit the `.env` file:
+
+```env
+DB_USER = your_username
+DB_PASSWORD = your_password
+DB_HOST = localhost
+DB_PORT = 3306
+DB_NAME = retail_project
+```
+
+### 5) Run preprocessing script
+
+```bash
+cd scripts
+python preprocess_and_load.py
+```
+
+Note: This script must be executed from within the `scripts` directory because it uses a relative path.
+
+### 6) Execute SQL files
+
+Run the SQL files in the `sql/` directory in order:
+
+* 01_calculate_monetary.sql
+* 02_calculate_frequency.sql
+* 03_calculate_recency.sql
+* 04_create_rfm_table.sql
+
+### 7) Run Jupyter Notebook
+
+```bash
+cd notebooks
 jupyter notebook
+```
 
-## 10. Future Improvements
+Then open `rfm_analysis.ipynb`.
 
-- Add customer segmentation rules directly in SQL
+## 13. Future Improvements
 
-- Enhance the dashboard with additional customer-level insights
+- Implement more detailed RFM segmentation rules (e.g., Champions, At Risk, Hibernating) for more refined customer analysis.
 
-- Automate the pipeline with scheduled execution
+- Validate consistency between Python-based RFM calculations and SQL-based results.
 
-- Extend analysis with cohort analysis or customer lifetime value (CLV)
+- Build a fully automated data pipeline to regularly update customer segmentation.
+
+- Extend the analysis by incorporating additional features such as customer lifetime value (CLV) or churn prediction.
