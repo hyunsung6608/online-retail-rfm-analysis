@@ -228,6 +228,7 @@ online-retail-analysis/
 ├── scripts/              # Python-based data cleaning and loading pipeline
 │   └── preprocess_and_load.py
 ├── sql/                  # SQL queries for metric validation and RFM data mart construction
+│   ├── 00_create_online_retail.sql
 │   ├── 01_calculate_monetary.sql
 │   ├── 02_calculate_frequency.sql
 │   ├── 03_calculate_recency.sql
@@ -255,9 +256,12 @@ cd online-retail-rfm-analysis
 pip install -r requirements.txt
 ```
 
+> **Requirement:** This project requires **MySQL 8.0+** because the SQL scripts use Common Table Expressions (CTEs).
+
 ### 3) Prepare MySQL database
 
-Create a database named `retail_project` in MySQL.
+
+Create a database named `retail_project`:
 
 ```bash
 mysql -u your_username -p
@@ -269,7 +273,7 @@ CREATE DATABASE retail_project;
 
 ### 4) Set up environment variables
 
-Create a `.env` file in the project root based on `.env.example`:
+Create a `.env` file based on `.env.example`:
 
 ```bash
 # macOS / Linux
@@ -279,7 +283,7 @@ cp .env.example .env
 copy .env.example .env
 ```
 
-Then edit the `.env` file:
+Edit the `.env` file:
 
 ```env
 DB_USER = your_username
@@ -289,32 +293,46 @@ DB_PORT = 3306
 DB_NAME = retail_project
 ```
 
-### 5) Run preprocessing script
+### 5) Create table schema
+
+Run the SQL script to create the `online_retail` table:
 
 ```bash
-cd scripts
-python preprocess_and_load.py
+mysql -u your_username -p retail_project < sql/00_create_online_retail.sql
 ```
 
-Note: This script must be executed from within the `scripts` directory because it uses a relative path.
+### 6) Run data preprocessing pipeline
 
-### 6) Execute SQL files
+```bash
+python scripts/preprocess_and_load.py
+```
 
-Run the SQL files in the `sql/` directory in order:
+* Cleans raw data using Python
+* Loads processed data into MySQL
 
-* 01_calculate_monetary.sql
-* 02_calculate_frequency.sql
-* 03_calculate_recency.sql
-* 04_create_rfm_table.sql
+### 7) Execute SQL pipeline
 
-### 7) Run Jupyter Notebook
+Run the SQL files in order:
+
+```text
+01_calculate_monetary.sql
+02_calculate_frequency.sql
+03_calculate_recency.sql
+04_create_rfm_table.sql
+```
+
+* Step 1–3: Validate each RFM metric
+* Step 4: Construct the final customer-level data mart (`rfm`)
+
+### 8) Run analysis notebook
 
 ```bash
 cd notebooks
 jupyter notebook
 ```
 
-Then open `rfm_analysis.ipynb`.
+Open `rfm_analysis.ipynb` to explore results and segmentation.
+
 
 ## 15. Future Improvements
 
