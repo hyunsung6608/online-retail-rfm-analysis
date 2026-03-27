@@ -8,7 +8,7 @@ Built an end-to-end data analytics pipeline that transforms raw transaction data
 Demonstrates the ability to identify high-value customer segments and deliver reproducible, data-driven insights from raw transactional data.
 
 ## Project Flow
-Raw CSV → Python Preprocessing → MySQL Loading → SQL-based RFM Analysis → Python/Tableau Visualization
+Raw CSV → Python Data Preprocessing & Exploratory Analysis → MySQL Loading → SQL-based RFM Analysis → Python/Tableau Visualization
 
 ## 2. Project Summary
 
