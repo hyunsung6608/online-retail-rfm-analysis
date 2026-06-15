@@ -264,17 +264,19 @@ Key findings from the analysis include:
 
 These results confirm a strong imbalance in customer value distribution, where a small segment drives a significant portion of total revenue.
 
-### Business Implications
+### Segment Action Matrix
 
-- **Champions** — Prioritize for loyalty programs and early access to new products
-- **Can't Lose** — Offer premium incentives, launch immediate Win-back campaigns
-- **At Risk** — Send personalized messages and re-engagement coupons
-- **Loyal** — Drive upsell and cross-sell, nudge toward Champions tier
-- **Potential Loyalist** — Encourage membership sign-up and repeat purchase rewards
-- **New Customer** — Deploy onboarding emails and second-purchase coupons
-- **Need Attention** — Target with seasonal promotions and purchase motivators
-- **Hibernating** — Apply low-cost re-engagement or exclude from active campaigns
-- **UK market concentration** — Represents both a geographic expansion opportunity and a concentration risk
+| Segment | Business Goal | Recommended Action | KPI |
+|---|---|---|---|
+| **Champions** | Retain & convert to brand ambassadors | VIP loyalty program, early product access, encourage reviews & referrals | Churn rate < 5%, repeat purchase rate |
+| **Can't Lose** | Immediate Win-back | High-value coupon, personalized re-engagement message, dedicated CS outreach | Win-back conversion rate, post-return repurchase rate |
+| **At Risk** | Prevent churn | Urgent personalized coupon, churn reason survey, re-visit email sequence | Churn rate reduction, retention rate |
+| **Loyal** | Nudge toward Champions | Upsell/cross-sell campaigns, membership tier upgrade offer | Champions conversion rate, average order value |
+| **Potential Loyalist** | Drive repeat purchase & convert to Loyal | Membership sign-up incentive, repeat purchase rewards, related product recommendations | Repurchase rate, Loyal conversion rate |
+| **New Customer** | Drive second purchase | Onboarding email sequence, second-purchase coupon, brand story content | Repurchase rate within 30 days |
+| **Need Attention** | Increase purchase frequency | Seasonal promotions, limited-time discounts, purchase trigger campaigns | Purchase frequency growth rate |
+| **Hibernating** | Low-cost reactivation or exclusion | Single low-cost batch campaign; exclude from active campaigns if no response | Reactivation rate, campaign ROI |
+| **Normal** | Maintain baseline engagement | Regular newsletter, general promotions | Purchase retention rate |geographic expansion opportunity and a concentration risk
 
 ## 14. Key Results
 
