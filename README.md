@@ -1,20 +1,36 @@
 # Online Retail RFM Analysis
 
-## 1. Project Overview
+## 1. Business Problem
 
-Customer value is not evenly distributed.
-A small group of high-value customers often drives
-the majority of revenue — yet without proper segmentation,
-they are treated the same as average buyers.
+Online retailers often apply a one-size-fits-all marketing approach
+despite significant differences in customer value.
+A small group of high-value customers drives the majority of revenue —
+yet without segmentation, they receive the same treatment as average buyers.
 
-This project applies RFM (Recency, Frequency, Monetary)
-analysis to identify and segment customers based on
-purchasing behavior, using an end-to-end pipeline
-from raw transaction data to an interactive Tableau dashboard.
+**The core question:**
+> "With a limited marketing budget, which customers should receive resources first?"
 
-Key highlight: The Champions segment (R≥4, F≥4, M≥4) comprises **22.18%** of customers
+**Why this matters:**
+
+- Without segmentation, high-value and average customers receive identical marketing — wasting budget
+- Losing a single Champions customer has the same revenue impact as losing dozens of average buyers
+- Blanket campaigns that ignore behavioral differences lead to lower re-engagement rates
+- Revenue concentrated in the UK market introduces geographic dependency risk
+
+**What this analysis enables:**
+
+By classifying customers into 9 behavioral groups based on purchasing patterns,
+this analysis provides a data-driven foundation for targeted marketing strategies
+and prioritized resource allocation toward high-value customers.
+
+---
+
+This project addresses the above problem through RFM (Recency, Frequency, Monetary) analysis,
+using an end-to-end pipeline from raw transaction data to an interactive Tableau dashboard.
+
+**Key finding:** The Champions segment (R≥4, F≥4, M≥4) comprises **22.18%** of customers
 yet contributes **65.19%** of total revenue —
-confirming a strong Pareto-like distribution in customer value.
+quantifying exactly why focused investment in top customers matters.
 
 ## 2. Key Highlights
 
@@ -84,6 +100,11 @@ The transformation from raw data to the data mart includes:
 
 ## 5. Project Summary
 
+**Problem:** Budget inefficiency from applying uniform marketing regardless of customer value
+
+**Approach:** RFM-based behavioral analysis → 9-segment classification → group-level strategy
+
+**Outcome:**
 - Built an end-to-end data pipeline combining Python and MySQL
 - Performed data cleaning in Python and SQL-based validation and aggregation
 - Designed and constructed a customer-level RFM data mart
@@ -235,7 +256,7 @@ Users can interact with filters to explore customer behavior, identify high-valu
 
 Key findings from the analysis include:
 
-- **Champions** account for a small share of customers but drive a disproportionately large portion of revenue
+- **Champions** account for 22.18% of customers but drive 65.19% of revenue — quantifying the cost of losing even one top customer
 - **Can't Lose** customers were once top buyers and require immediate Win-back campaigns
 - **At Risk** customers are trending toward churn — retention action is urgent
 - **Potential Loyalists** recently purchased and show strong upsell and membership conversion potential
@@ -387,4 +408,4 @@ Open `rfm_analysis.ipynb` to explore results and segmentation.
 - Ensure consistency between Python-based and SQL-based RFM calculations to strengthen data validation and reliability
 - Build an automated data pipeline to enable periodic updates of customer segmentation and improve scalability
 - Extend the analytical model by incorporating additional features such as Customer Lifetime Value (CLV) and churn prediction
-- Improve data modeling by introducing additional dimensions (e.g., product or time) to support more advanced analysisd
+- Improve data modeling by introducing additional dimensions (e.g., product or time) to support more advanced analysis
