@@ -285,6 +285,24 @@ These results confirm a strong imbalance in customer value distribution, where a
 - **Can't Lose recovery value**: Former top buyers (F≥4, M≥4) who have already churned. Successful Win-back campaigns carry high revenue recovery potential — comparable to Champions-level contribution
 - **Single-market concentration risk**: Revenue concentrated in one geographic market means demand shifts there directly affect overall business performance. Geographic diversification or ongoing concentration monitoring is recommended
 
+### Priority Recommendations
+
+Based on this analysis, three actions are recommended as immediate priorities.
+
+**① Defend Champions revenue**
+This segment drives 65% of total revenue despite representing just 22% of customers.
+A VIP loyalty program and dedicated retention management will deliver
+the fastest and highest ROI of any initiative.
+
+**② Act urgently on At Risk & Can't Lose**
+These customers have strong purchase histories but are showing churn signals.
+The sooner personalized Win-back campaigns are deployed, the higher the recovery rate.
+
+**③ Develop Potential Loyalists & New Customers**
+These segments show high repurchase potential.
+Onboarding sequences and membership incentives can build
+the next generation of Champions early.
+
 ## 14. Key Results
 
 - Processed and loaded **397,884** transaction records into MySQL
