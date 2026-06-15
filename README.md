@@ -303,15 +303,7 @@ These segments show high repurchase potential.
 Onboarding sequences and membership incentives can build
 the next generation of Champions early.
 
-## 14. Key Results
-
-- Processed and loaded **397,884** transaction records into MySQL
-- Analyzed **4,338** unique customers
-- Segmented customers into **9 distinct groups** for targeted marketing
-- Champions segment (**22.18%** of customers) contributes **65.19%** of total revenue
-- Confirmed a strong Pareto-like distribution in customer purchasing behavior
-
-## 15. Project Structure
+## 14. Project Structure
 
 ```bash
 online-retail-analysis/
@@ -341,7 +333,7 @@ online-retail-analysis/
 └── README.ko.md
 ```
 
-## 16. How to Run
+## 15. How to Run
 
 ### 1) Clone the repository
 
@@ -430,7 +422,7 @@ jupyter notebook
 
 Open `rfm_analysis.ipynb` to explore results and segmentation.
 
-## 17. Future Improvements
+## 16. Future Improvements
 
 - Ensure consistency between Python-based and SQL-based RFM calculations to strengthen data validation and reliability
 - Build an automated data pipeline to enable periodic updates of customer segmentation and improve scalability
