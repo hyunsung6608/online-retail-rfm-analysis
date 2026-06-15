@@ -15,7 +15,7 @@ yet without segmentation, they receive the same treatment as average buyers.
 - Without segmentation, high-value and average customers receive identical marketing — wasting budget
 - Losing a single Champions customer has the same revenue impact as losing dozens of average buyers
 - Blanket campaigns that ignore behavioral differences lead to lower re-engagement rates
-- Revenue concentrated in the UK market introduces geographic dependency risk
+- Revenue concentrated in a single market introduces geographic dependency risk
 
 **What this analysis enables:**
 
@@ -260,7 +260,7 @@ Key findings from the analysis include:
 - **Can't Lose** customers were once top buyers and require immediate Win-back campaigns
 - **At Risk** customers are trending toward churn — retention action is urgent
 - **Potential Loyalists** recently purchased and show strong upsell and membership conversion potential
-- Sales are highly concentrated in the **United Kingdom**, suggesting geographic dependency risk
+- Sales are highly concentrated in a single market, suggesting geographic dependency risk
 
 These results confirm a strong imbalance in customer value distribution, where a small segment drives a significant portion of total revenue.
 
@@ -276,7 +276,14 @@ These results confirm a strong imbalance in customer value distribution, where a
 | **New Customer** | Drive second purchase | Onboarding email sequence, second-purchase coupon, brand story content | Repurchase rate within 30 days |
 | **Need Attention** | Increase purchase frequency | Seasonal promotions, limited-time discounts, purchase trigger campaigns | Purchase frequency growth rate |
 | **Hibernating** | Low-cost reactivation or exclusion | Single low-cost batch campaign; exclude from active campaigns if no response | Reactivation rate, campaign ROI |
-| **Normal** | Maintain baseline engagement | Regular newsletter, general promotions | Purchase retention rate |geographic expansion opportunity and a concentration risk
+| **Normal** | Maintain baseline engagement | Regular newsletter, general promotions | Purchase retention rate |
+
+### Business Impact
+
+- **Champions churn risk**: 22.18% of customers account for 65.19% of revenue. A 1%p drop in Champions retention translates to roughly a 0.65%p loss in total revenue — approximately 3x the impact of losing the same share of average customers
+- **At Risk urgency**: High F and M scores but declining Recency signal imminent churn among valuable customers. Without immediate retention action, these customers risk dropping to low-value segments permanently
+- **Can't Lose recovery value**: Former top buyers (F≥4, M≥4) who have already churned. Successful Win-back campaigns carry high revenue recovery potential — comparable to Champions-level contribution
+- **Single-market concentration risk**: Revenue concentrated in one geographic market means demand shifts there directly affect overall business performance. Geographic diversification or ongoing concentration monitoring is recommended
 
 ## 14. Key Results
 
