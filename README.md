@@ -269,7 +269,7 @@ These results confirm a strong imbalance in customer value distribution, where a
 | Segment | Business Goal | Recommended Action | KPI |
 |---|---|---|---|
 | **Champions** | Retain & convert to brand ambassadors | VIP loyalty program, early product access, encourage reviews & referrals | Churn rate < 5%, repeat purchase rate |
-| **Can't Lose** | Immediate Win-back | High-value coupon, personalized re-engagement message, dedicated CS outreach | Win-back conversion rate, post-return repurchase rate |
+| **Can't Lose** | Immediate Win-back | One-to-one Win-back offer, personalized re-engagement message, dedicated CS outreach | Win-back conversion rate, post-return repurchase rate |
 | **At Risk** | Prevent churn | Urgent personalized coupon, churn reason survey, re-visit email sequence | Churn rate reduction, retention rate |
 | **Loyal** | Nudge toward Champions | Upsell/cross-sell campaigns, membership tier upgrade offer | Champions conversion rate, average order value |
 | **Potential Loyalist** | Drive repeat purchase & convert to Loyal | Membership sign-up incentive, repeat purchase rewards, related product recommendations | Repurchase rate, Loyal conversion rate |
@@ -295,8 +295,8 @@ Because retaining this group protects the largest share of revenue,
 a VIP loyalty program and dedicated retention management should be the top priority.
 
 **② Act urgently on At Risk & Can't Lose**
-These customers have strong purchase histories but are showing churn signals.
-The sooner personalized Win-back campaigns are deployed, the higher the recovery rate.
+These customers had high past frequency and spending scores but now have low Recency scores (R≤2).
+We recommend starting personalized Win-back outreach early, before their Recency grows longer.
 
 **③ Develop Potential Loyalists & New Customers**
 These segments show high repurchase potential.
@@ -305,7 +305,7 @@ the next generation of Champions early.
 
 ## 14. Project Structure
 
-```bash
+```text
 online-retail-rfm-analysis/
 ├── data/                 # Raw dataset and exported RFM data
 │   ├── online_retail.csv
