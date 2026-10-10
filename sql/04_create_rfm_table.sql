@@ -17,7 +17,7 @@ snapshot AS (
 
 SELECT
     c.CustomerID,
-    DATEDIFF(MAX(s.snapshot_date), MAX(c.InvoiceDate)) AS Recency,   -- 최근 구매일로부터 현재까지 경과일
+    TIMESTAMPDIFF(DAY, MAX(c.InvoiceDate), MAX(s.snapshot_date)) AS Recency,   -- 최근 구매일로부터 기준일까지 경과일 (24시간 단위 내림, Python .days와 동일)
     COUNT(DISTINCT c.InvoiceNo) AS Frequency,   -- 구매 횟수
     SUM(c.Quantity * c.UnitPrice) AS Monetary   -- 총 구매 금액
 FROM clean_data c

@@ -15,7 +15,7 @@ snapshot AS (
 
 SELECT
     c.CustomerID,
-    DATEDIFF(MAX(s.snapshot_date), MAX(c.InvoiceDate)) AS Recency
+    TIMESTAMPDIFF(DAY, MAX(c.InvoiceDate), MAX(s.snapshot_date)) AS Recency
 FROM clean_data c
 CROSS JOIN snapshot s
 GROUP BY c.CustomerID
