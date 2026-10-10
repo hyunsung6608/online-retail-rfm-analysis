@@ -256,7 +256,7 @@ Users can interact with filters to explore customer behavior, identify high-valu
 
 Key findings from the analysis include:
 
-- **Champions** account for 22.18% of customers but drive 65.19% of revenue — quantifying the cost of losing even one top customer
+- **Champions** account for 22.18% of customers but drive 65.19% of revenue — confirming that each Champions customer generates about 2.9x the revenue of an average customer
 - **Can't Lose** customers were once top buyers and require immediate Win-back campaigns
 - **At Risk** customers are trending toward churn — retention action is urgent
 - **Potential Loyalists** recently purchased and show strong upsell and membership conversion potential
@@ -281,8 +281,8 @@ These results confirm a strong imbalance in customer value distribution, where a
 ### Business Impact
 
 - **Champions churn risk**: 22.18% of customers account for 65.19% of revenue. A 1%p drop in Champions retention translates to roughly a 0.65%p loss in total revenue — about 2.9x the loss from the same number of average customers churning
-- **At Risk urgency**: High F and M scores but declining Recency signal imminent churn among valuable customers. Without immediate retention action, these customers risk dropping to low-value segments permanently
-- **Can't Lose recovery value**: Former top buyers (F≥4, M≥4) who have already churned. Successful Win-back campaigns carry high revenue recovery potential — comparable to Champions-level contribution
+- **At Risk urgency**: Customers with high past frequency and spending scores (F≥3, M≥3) but a low Recency score (R≤2), signaling churn risk. This segment holds 7.73% of revenue (9.89% of customers), with an average Recency of 136.3 days versus 92.5 days overall. Without immediate retention action, this revenue share is at risk
+- **Can't Lose recovery value**: Customers with high past frequency and spending scores (F≥4, M≥4) who have not purchased for an average of 232.3 days. The segment is small — 25 customers (0.58%) contributing 0.60% of revenue, with per-customer revenue about 1.0x the average — so targeted one-to-one Win-back outreach is more practical than a broad campaign
 - **Single-market concentration risk**: Revenue concentrated in one geographic market means demand shifts there directly affect overall business performance. Geographic diversification or ongoing concentration monitoring is recommended
 
 ### Priority Recommendations
@@ -291,8 +291,8 @@ Based on this analysis, three actions are recommended as immediate priorities.
 
 **① Defend Champions revenue**
 This segment drives 65% of total revenue despite representing just 22% of customers.
-A VIP loyalty program and dedicated retention management will deliver
-the fastest and highest ROI of any initiative.
+Because retaining this group protects the largest share of revenue,
+a VIP loyalty program and dedicated retention management should be the top priority.
 
 **② Act urgently on At Risk & Can't Lose**
 These customers have strong purchase histories but are showing churn signals.
