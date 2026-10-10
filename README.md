@@ -306,7 +306,7 @@ the next generation of Champions early.
 ## 14. Project Structure
 
 ```bash
-online-retail-analysis/
+online-retail-rfm-analysis/
 ├── data/                 # Raw dataset and exported RFM data
 │   ├── online_retail.csv
 │   └── rfm_tableau.csv

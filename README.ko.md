@@ -305,7 +305,7 @@ VIP 로열티 프로그램과 전담 관리를 통해 이탈을 최소화하는 
 ## 14. 프로젝트 구조
 
 ```bash
-online-retail-analysis/
+online-retail-rfm-analysis/
 ├── data/                 # 원시 데이터셋 및 RFM 내보내기 데이터
 │   ├── online_retail.csv
 │   └── rfm_tableau.csv
