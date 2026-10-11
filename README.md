@@ -167,6 +167,7 @@ The raw dataset was cleaned before loading into MySQL.
 - Removed invalid price records (`UnitPrice <= 0`)
 - Converted `CustomerID` to integer type
 - Created a new `Sales` column as `Quantity * UnitPrice`
+- Retained 5,192 exact duplicate rows (1.30% of transactions, 0.27% of revenue): all occur within the same invoice, and without line-level IDs they cannot be confirmed as errors. Sensitivity check — removing them shifts the Champions customer share by only 0.12%p (22.18% → 22.06%) and changes no conclusions.
 
 The preprocessing logic is implemented in `scripts/preprocess_and_load.py`.
 
