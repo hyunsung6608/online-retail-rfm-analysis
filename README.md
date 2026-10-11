@@ -37,7 +37,7 @@ quantifying exactly why focused investment in top customers matters.
 - Processed **397,884** transactions and analyzed **4,338** unique customers
 - Champions segment (**22.18%** of customers) contributes **65.19%** of total revenue — confirming a strong Pareto-like distribution
 - Segmented customers into **9 distinct groups** for precise, actionable targeting
-- Built end-to-end pipeline: Python cleaning → MySQL data mart → Tableau dashboard
+- Built end-to-end pipeline: Python cleaning → Python RFM scoring & segmentation → Tableau dashboard, with a MySQL data mart cross-checking R/F/M values
 - Each RFM metric independently validated in SQL before data mart construction
 - Applied **log transformation to Monetary** (`log1p`) to reduce outlier distortion in M_score
 
@@ -184,7 +184,7 @@ These steps ensure consistent business logic and improve the reliability of the 
 
 ## 10. RFM Analysis (Python & SQL)
 
-Customer-level RFM metrics were calculated using both Python and MySQL.
+Customer-level R, F, and M values were calculated in both Python and MySQL and cross-checked; scoring (including `log1p`) and segmentation were performed in Python only.
 
 - **Recency**: Days since the customer's most recent purchase
 - **Frequency**: Number of distinct orders per customer
@@ -198,7 +198,7 @@ Customer-level RFM metrics were calculated using both Python and MySQL.
 
 ### SQL-based Analysis
 
-RFM metrics were calculated in MySQL using a two-step approach:
+Calculated raw R, F, and M values in MySQL in two steps (no scoring or segmentation):
 
 1. **Metric-level validation**
    - `sql/01_calculate_monetary.sql`: Validates total spending per customer
@@ -208,7 +208,7 @@ RFM metrics were calculated in MySQL using a two-step approach:
 2. **Data mart construction**
    - `sql/04_create_rfm_table.sql`: Integrates all metrics and creates the final `rfm` table
 
-This approach ensures that each metric is independently verified before constructing the final analytical dataset.
+**Cross-checked against Python: R and F match for all 4,338 customers, and M matches for all but 4** (up to £0.001 difference because `UnitPrice` is stored as `DECIMAL(10,2)`; no effect on scores or segments). Recency uses `TIMESTAMPDIFF(DAY, …)` to match Python's `.days` (elapsed days rounded down).
 
 ## 11. Customer Segmentation
 
@@ -425,7 +425,7 @@ Open `rfm_analysis.ipynb` to explore results and segmentation.
 
 ## 16. Future Improvements
 
-- Ensure consistency between Python-based and SQL-based RFM calculations to strengthen data validation and reliability
+- Automate the Python–SQL R/F/M cross-check so that future data reloads are verified without manual comparison
 - Build an automated data pipeline to enable periodic updates of customer segmentation and improve scalability
 - Extend the analytical model by incorporating additional features such as Customer Lifetime Value (CLV) and churn prediction
 - Improve data modeling by introducing additional dimensions (e.g., product or time) to support more advanced analysis
