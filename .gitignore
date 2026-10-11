@@ -22,3 +22,6 @@ venv/
 # IDE / Editor settings
 .vscode/
 .idea/
+
+# Tableau temporary files
+~*.twbr
