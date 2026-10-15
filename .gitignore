@@ -25,3 +25,6 @@ venv/
 
 # Tableau temporary files
 ~*.twbr
+
+# Raw dataset (download from UCI, do not commit)
+data/online_retail.csv

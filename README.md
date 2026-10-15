@@ -15,7 +15,6 @@
 - 세그멘테이션 없이는 고가치 고객과 일반 고객이 동일한 마케팅을 받음 → 예산 낭비
 - Champions 고객 1명은 평균 고객 1명보다 약 2.9배의 매출을 만듦 (매출 비중 65.19% ÷ 고객 비중 22.18%)
 - 고객별 행동 패턴 차이를 무시한 일괄 캠페인은 재참여율 저하로 이어짐
-- 단일 시장에 집중된 매출 구조는 지역 의존도 리스크를 내포
 
 **이 분석이 가능하게 하는 것:**
 
@@ -44,7 +43,9 @@ end-to-end 파이프라인으로 구현했습니다.
 
 ## 3. 프로젝트 흐름
 
-원시 CSV → Python 데이터 정제 & 탐색 분석 → MySQL 적재 → SQL 기반 변환 & 검증 → RFM 데이터마트 구축 → Python/Tableau 시각화
+원시 CSV → Python 데이터 정제 & 탐색 분석 → MySQL 적재 → Python R·F·M 계산·점수화(`log1p`)·세그멘테이션 → Tableau 시각화
+
+SQL은 고객 단위 R·F·M 원값을 별도로 계산해 Python 결과와 교차 검증하고 `rfm` 데이터마트를 구축합니다.
 
 ## 4. 데이터 모델 & 데이터마트 설계
 
@@ -75,7 +76,7 @@ end-to-end 파이프라인으로 구현했습니다.
 
 - `rfm` 테이블은 **주제 지향적 분석 테이블**로 활용
 - SQL 집계를 통해 트랜잭션 데이터를 고객 단위 지표로 변환
-- 분석 쿼리, 시각화, 비즈니스 인사이트에 최적화된 구조
+- 고객 단위 분석 쿼리와 Python 결과 교차 검증에 쓰는 구조
 
 ### 데이터 변환 로직
 
@@ -107,8 +108,8 @@ end-to-end 파이프라인으로 구현했습니다.
 
 **결과:**
 - Python과 MySQL을 결합한 end-to-end 데이터 파이프라인 구축
-- Python으로 데이터 정제, SQL로 검증 및 집계 수행
-- 고객 단위 RFM 데이터마트 설계 및 구축
+- Python으로 데이터 정제, R·F·M 계산·점수화(`log1p`)·세그멘테이션 수행
+- SQL로 고객 단위 R·F·M 원값을 별도 계산해 Python 결과와 교차 검증하고 `rfm` 데이터마트 구축
 - RFM 분석을 통한 구매 행동 기반 고객 세그멘테이션 (9개 세그먼트)
 - 고가치 고객 그룹 식별 및 비즈니스 인사이트 도출
 
@@ -128,6 +129,12 @@ end-to-end 파이프라인으로 구현했습니다.
 
 이 프로젝트는 영국 기반 온라인 리테일 기업의 트랜잭션 기록을 담은 Online Retail 데이터셋을 사용합니다.
 
+- **출처**: [UCI Machine Learning Repository — Online Retail](https://archive.ics.uci.edu/dataset/352/online+retail)
+- **라이선스**: [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/)
+- **인용**: Chen, D. (2015). Online Retail [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5BW33
+
+정제 데이터 기준 영국이 매출의 약 82%, 고객의 약 90%를 차지합니다.
+
 고객 행동 분석 및 RFM 기반 세그멘테이션에 적합한 트랜잭션 단위 구매 이력을 포함합니다.
 
 주요 컬럼:
@@ -144,15 +151,16 @@ end-to-end 파이프라인으로 구현했습니다.
 
 ## 8. 데이터 처리 파이프라인
 
-원시 데이터 수집부터 분석용 데이터마트 구축까지의 end-to-end 파이프라인:
+원시 데이터 수집부터 시각화까지의 end-to-end 파이프라인:
 
 1. CSV에서 원시 트랜잭션 데이터 로드
 2. Python으로 데이터 정제 및 검증
 3. `Sales` 파생 컬럼 생성 (`Quantity * UnitPrice`)
 4. 정제 데이터셋을 MySQL에 적재
-5. SQL 기반 변환 및 지표 검증
-6. 트랜잭션 데이터를 고객 단위 RFM 데이터마트(`rfm`)로 집계
-7. Python 및 Tableau에서 분석, 세그멘테이션, 시각화
+5. Python에서 고객 단위 R·F·M 계산, 점수화(`log1p` 포함), 세그멘테이션
+6. Tableau에서 시각화
+
+SQL은 위 흐름과 별도로 고객 단위 R·F·M 원값을 계산해 Python 결과와 교차 검증하고, 고객 단위 RFM 데이터마트(`rfm`)를 구축합니다.
 
 ## 9. 데이터 전처리 & 변환
 
@@ -209,7 +217,7 @@ MySQL에서 두 단계로 R·F·M 원값을 계산했습니다 (점수화·세�
 2. **데이터마트 구축**
    - `sql/04_create_rfm_table.sql`: 모든 지표를 통합하여 최종 `rfm` 테이블 생성
 
-**Python 결과와 교차 검증: 고객 4,338명 전원의 R·F 값이 일치하고, M 값은 4명을 제외하고 일치**(단가가 `DECIMAL(10,2)`로 저장되어 최대 £0.001 차이, 점수·세그먼트 영향 없음). Recency는 Python의 `.days`와 같도록 `TIMESTAMPDIFF(DAY, …)`로 계산(24시간 단위 내림).
+**Python 결과와 교차 검증: 고객 4,338명 전원의 R·F 값이 일치하고, M 값은 4명을 제외하고 일치**(단가가 `DECIMAL(10,2)`로 저장되어 최대 £0.001 차이, 점수·세그먼트 영향 없음). 초기에는 Python(날짜 차이)과 SQL(경과 시간)의 Recency 정의가 달라 값이 어긋났고, 이를 찾아 Python의 `.days`와 같도록 `TIMESTAMPDIFF(DAY, …)`(24시간 단위 내림)로 통일했습니다.
 
 ## 11. 고객 세그멘테이션
 
@@ -262,7 +270,6 @@ Python으로 탐색적 분석과 고객 세그멘테이션 결과의 사전 검�
 - **Can't Lose** 세그먼트는 과거 최상위 고객으로, 즉각적인 Win-back 캠페인 대상
 - **At Risk** 세그먼트는 이탈이 진행 중이어서 리텐션 조치가 시급
 - **Potential Loyalist**는 최근 구매 고객으로 업셀 및 멤버십 전환 가능성이 높음
-- 매출이 특정 단일 시장에 집중되어 있어 지역 의존도 리스크 존재
 
 소수의 고객이 매출의 상당 부분을 차지하는 강한 고객 가치 불균형이 확인됩니다.
 
@@ -270,7 +277,7 @@ Python으로 탐색적 분석과 고객 세그멘테이션 결과의 사전 검�
 
 | 세그먼트 | 비즈니스 목표 | 추천 액션 | KPI |
 |---|---|---|---|
-| **Champions** | 유지 & 브랜드 앰배서더화 | VIP 로열티 프로그램, 신제품 얼리액세스, 리뷰·추천 유도 | 이탈율 < 5%, 재구매율 유지 |
+| **Champions** | 유지 & 브랜드 앰배서더화 | VIP 로열티 프로그램, 신제품 얼리액세스, 리뷰·추천 유도 | 이탈율, 재구매율 |
 | **Can't Lose** | 즉각적 Win-back | 1:1 개별 Win-back 혜택 제안, 개인화 재방문 메시지, 전담 CS 연결 | Win-back 전환율, 복귀 후 재구매율 |
 | **At Risk** | 이탈 방지 | 긴급 개인화 쿠폰, 이탈 원인 설문, 재방문 유도 이메일 | 이탈율 감소, 리텐션율 |
 | **Loyal** | Champions 전환 유도 | 업셀·크로스셀 캠페인, 멤버십 티어 업그레이드 제안 | Champions 전환율, 객단가 증가 |
@@ -282,10 +289,9 @@ Python으로 탐색적 분석과 고객 세그멘테이션 결과의 사전 검�
 
 ### 비즈니스 임팩트
 
-- **Champions 이탈 리스크**: 전체 고객의 22.18%가 매출의 65.19%를 담당. Champions 고객 1%p 이탈 시 전체 매출의 약 0.65%p 손실 — 같은 수의 평균 고객이 이탈할 때보다 약 2.9배 큰 손실
+- **Champions 이탈 리스크**: 전체 고객의 22.18%가 매출의 65.19%를 담당. Champions 고객의 1%가 이탈하면 전체 매출의 약 0.65%p 손실 — 같은 수의 평균 고객이 이탈할 때보다 약 2.9배 큰 손실
 - **At Risk 긴급도**: 과거 구매 빈도·금액 점수가 높지만(F≥3, M≥3) Recency 점수가 낮아(R≤2) 이탈 위험이 있는 고객군. 매출의 7.73%(고객의 9.89%)를 차지하며, 평균 Recency는 136.3일로 전체 평균 92.5일보다 김. 즉각적인 리텐션 조치가 없으면 이 매출 비중을 잃을 위험이 있음
 - **Can't Lose 복구 가치**: 과거 구매 빈도·금액 점수가 높았던(F≥4, M≥4) 고객으로, 평균 232.3일간 구매가 없음. 25명(고객의 0.58%), 매출 비중 0.60%, 1인당 매출은 평균 고객의 약 1.0배로 규모가 작아, 대규모 캠페인보다 1:1 개별 Win-back 접촉이 현실적임
-- **단일 시장 의존 리스크**: 매출이 특정 지역에 집중되어 있어 해당 시장의 수요 변화가 전체 매출에 직접 영향. 지역 다변화 전략 또는 집중도 모니터링 필요
 
 ### 우선순위 제언
 
@@ -309,7 +315,7 @@ Recency가 더 길어지기 전에 개인화 Win-back 접촉을 시작할 것을
 ```text
 online-retail-rfm-analysis/
 ├── data/                 # 원시 데이터셋 및 RFM 내보내기 데이터
-│   ├── online_retail.csv
+│   ├── online_retail.csv   # (직접 다운로드, 커밋하지 않음)
 │   └── rfm_tableau.csv
 ├── images/               # 시각화 결과물 (Python 분석 & Tableau 대시보드)
 │   ├── segment_distribution.png
@@ -342,7 +348,11 @@ git clone https://github.com/hyunsung6608/online-retail-rfm-analysis.git
 cd online-retail-rfm-analysis
 ```
 
-### 2) 의존성 설치
+### 2) 데이터셋 다운로드
+
+[UCI Machine Learning Repository — Online Retail](https://archive.ics.uci.edu/dataset/352/online+retail)에서 데이터셋을 다운로드한 후 `data/online_retail.csv`로 저장합니다.
+
+### 3) 의존성 설치
 
 ```bash
 pip install -r requirements.txt
@@ -350,7 +360,7 @@ pip install -r requirements.txt
 
 > **요구사항:** SQL 스크립트에서 CTE를 사용하므로 **MySQL 8.0 이상**이 필요합니다.
 
-### 3) MySQL 데이터베이스 준비
+### 4) MySQL 데이터베이스 준비
 
 `retail_project` 데이터베이스 생성:
 
@@ -362,7 +372,7 @@ mysql -u your_username -p
 CREATE DATABASE retail_project;
 ```
 
-### 4) 환경 변수 설정
+### 5) 환경 변수 설정
 
 `.env.example`을 기반으로 `.env` 파일 생성:
 
@@ -384,13 +394,13 @@ DB_PORT = 3306
 DB_NAME = retail_project
 ```
 
-### 5) 테이블 스키마 생성
+### 6) 테이블 스키마 생성
 
 ```bash
 mysql -u your_username -p retail_project < sql/00_create_online_retail.sql
 ```
 
-### 6) 데이터 전처리 파이프라인 실행
+### 7) 데이터 전처리 파이프라인 실행
 
 ```bash
 python scripts/preprocess_and_load.py
@@ -399,7 +409,7 @@ python scripts/preprocess_and_load.py
 * Python으로 원시 데이터 정제
 * 정제된 데이터를 MySQL에 적재
 
-### 7) SQL 파이프라인 실행
+### 8) SQL 파이프라인 실행
 
 아래 순서로 SQL 파일 실행:
 
@@ -413,7 +423,7 @@ python scripts/preprocess_and_load.py
 * 1~3단계: 각 RFM 지표 검증
 * 4단계: 최종 고객 단위 데이터마트(`rfm`) 구축
 
-### 8) 분석 노트북 실행
+### 9) 분석 노트북 실행
 
 ```bash
 cd notebooks
