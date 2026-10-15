@@ -1,359 +1,358 @@
-# Online Retail RFM Analysis
+# Online Retail RFM 분석
 
-## 1. Business Problem
+## 1. 비즈니스 문제
 
-Online retailers often apply a one-size-fits-all marketing approach
-despite significant differences in customer value.
-A small group of high-value customers drives the majority of revenue —
-yet without segmentation, they receive the same treatment as average buyers.
+온라인 리테일 기업은 제한된 마케팅 예산 속에서
+모든 고객에게 동일한 접근 방식을 취하는 경우가 많습니다.
+그러나 고객 가치는 균등하지 않으며,
+소수의 고가치 고객이 전체 매출의 대부분을 만들어냅니다.
 
-**The core question:**
-> "With a limited marketing budget, which customers should receive resources first?"
+**핵심 질문:**
+> "마케팅 예산이 제한된 상황에서, 어떤 고객에게 먼저 리소스를 투입해야 하는가?"
 
-**Why this matters:**
+**왜 중요한가:**
 
-- Without segmentation, high-value and average customers receive identical marketing — wasting budget
-- A single Champions customer generates about 2.9x the revenue of an average customer (65.19% of revenue ÷ 22.18% of customers)
-- Blanket campaigns that ignore behavioral differences lead to lower re-engagement rates
-- Revenue concentrated in a single market introduces geographic dependency risk
+- 세그멘테이션 없이는 고가치 고객과 일반 고객이 동일한 마케팅을 받음 → 예산 낭비
+- Champions 고객 1명은 평균 고객 1명보다 약 2.9배의 매출을 만듦 (매출 비중 65.19% ÷ 고객 비중 22.18%)
+- 고객별 행동 패턴 차이를 무시한 일괄 캠페인은 재참여율 저하로 이어짐
+- 단일 시장에 집중된 매출 구조는 지역 의존도 리스크를 내포
 
-**What this analysis enables:**
+**이 분석이 가능하게 하는 것:**
 
-By classifying customers into 9 behavioral groups based on purchasing patterns,
-this analysis provides a data-driven foundation for targeted marketing strategies
-and prioritized resource allocation toward high-value customers.
+구매 행동 기반으로 고객을 9개 그룹으로 분류하여,
+각 그룹에 맞는 마케팅 전략을 수립하고
+제한된 예산을 고가치 고객에게 우선 집중할 수 있는 근거를 제공합니다.
 
 ---
 
-This project addresses the above problem through RFM (Recency, Frequency, Monetary) analysis,
-using an end-to-end pipeline from raw transaction data to an interactive Tableau dashboard.
+이 프로젝트는 RFM(Recency, Frequency, Monetary) 분석을 통해
+위 문제를 데이터 기반으로 해결합니다.
+원시 트랜잭션 데이터에서 시작해 Tableau 인터랙티브 대시보드까지
+end-to-end 파이프라인으로 구현했습니다.
 
-**Key finding:** The Champions segment (R≥4, F≥4, M≥4) comprises **22.18%** of customers
-yet contributes **65.19%** of total revenue —
-quantifying exactly why focused investment in top customers matters.
+**핵심 수치:** 전체 고객의 **22.18%** 에 해당하는 Champions 세그먼트(R≥4, F≥4, M≥4)가
+총 매출의 **65.19%** 를 차지 — 소수 고객에 집중 투자해야 하는 이유를 수치로 확인.
 
-## 2. Key Highlights
+## 2. 핵심 성과
 
-- Processed **397,884** transactions and analyzed **4,338** unique customers
-- Champions segment (**22.18%** of customers) contributes **65.19%** of total revenue — confirming a strong Pareto-like distribution
-- Segmented customers into **9 distinct groups** for precise, actionable targeting
-- Built end-to-end pipeline: Python cleaning → Python RFM scoring & segmentation → Tableau dashboard, with a MySQL data mart cross-checking R/F/M values
-- Each RFM metric independently validated in SQL before data mart construction
-- Applied **log transformation to Monetary** (`log1p`) to reduce outlier distortion in M_score
+- **397,884건** 트랜잭션 처리 및 **4,338명** 고객 분석
+- Champions 세그먼트(**22.18%**) 가 총 매출의 **65.19%** 기여 — 강한 파레토 분포 확인
+- 9개 세그먼트 기반 정밀 고객 분류로 마케팅 전략 세분화
+- Python 정제 → Python RFM 점수화·세그멘테이션 → Tableau 대시보드 end-to-end 파이프라인 구축, MySQL 데이터마트로 R·F·M 값 교차 검증
+- 데이터마트 구성 전 각 RFM 지표를 SQL로 독립 검증
+- **Monetary 로그 변환**(`log1p`)으로 M_score의 이상치 왜곡 완화
 
-## 3. Project Flow
+## 3. 프로젝트 흐름
 
-Raw CSV → Python Data Cleaning & Exploratory Analysis → MySQL Loading → SQL-based Transformation & Validation → RFM Data Mart Construction → Python/Tableau Visualization
+원시 CSV → Python 데이터 정제 & 탐색 분석 → MySQL 적재 → SQL 기반 변환 & 검증 → RFM 데이터마트 구축 → Python/Tableau 시각화
 
-## 4. Data Model & Data Mart Design
+## 4. 데이터 모델 & 데이터마트 설계
 
-![Data Model ERD](images/data_model_erd.png)
+![데이터 모델 ERD](images/data_model_erd.png)
 
-This project is designed with a clear separation between transactional data and an analysis-ready customer-level data mart.
+이 프로젝트는 트랜잭션 데이터와 분석용 고객 단위 데이터마트를 명확히 분리하여 설계했습니다.
 
-Transaction-level data (`online_retail`) is transformed and aggregated into customer-level metrics (R/F/M), which are stored in the `rfm` table.
+트랜잭션 단위 데이터(`online_retail`)는 고객 단위 RFM 지표로 변환·집계되어 `rfm` 테이블에 저장됩니다.
 
-This structure enables efficient customer segmentation and supports scalable, reproducible analytics workflows.
+이 구조는 효율적인 고객 세그멘테이션을 가능하게 하고, 확장 가능하고 재현 가능한 분석 워크플로우를 지원합니다.
 
-### Data Model Overview
+### 데이터 모델 개요
 
-The data model consists of two main layers:
+두 가지 주요 레이어로 구성됩니다:
 
-- **Transaction-level table (`online_retail`)**
-  - Stores cleaned transactional data loaded into MySQL
-  - Contains detailed information such as `InvoiceNo`, `StockCode`, `Quantity`, `UnitPrice`, `CustomerID`, and `InvoiceDate`
+- **트랜잭션 단위 테이블 (`online_retail`)**
+  - MySQL에 적재된 정제 트랜잭션 데이터 저장
+  - `InvoiceNo`, `StockCode`, `Quantity`, `UnitPrice`, `CustomerID`, `InvoiceDate` 등 포함
 
-- **Customer-level data mart (`rfm`)**
-  - Aggregated table derived from transaction data
-  - One row per customer
-  - Stores RFM metrics (`Recency`, `Frequency`, `Monetary`) for segmentation and analysis
+- **고객 단위 데이터마트 (`rfm`)**
+  - 트랜잭션 데이터에서 파생된 집계 테이블
+  - 고객당 1행
+  - 세그멘테이션 및 분석을 위한 RFM 지표 저장
 
-### Data Mart Design
+### 데이터마트 설계
 
-A customer-centric data mart was designed to support behavioral analysis.
+고객 행동 분석을 지원하는 고객 중심 데이터마트를 설계했습니다.
 
-- The `rfm` table serves as a **subject-oriented analytical table**
-- Transaction-level data is transformed into customer-level metrics through SQL-based aggregation
-- The structure is optimized for analytical queries, visualization, and business insights
+- `rfm` 테이블은 **주제 지향적 분석 테이블**로 활용
+- SQL 집계를 통해 트랜잭션 데이터를 고객 단위 지표로 변환
+- 분석 쿼리, 시각화, 비즈니스 인사이트에 최적화된 구조
 
-### Data Transformation Logic
+### 데이터 변환 로직
 
-The transformation from raw data to the data mart includes:
+원시 데이터에서 데이터마트까지의 변환 과정:
 
-- Data validation:
-  - Missing `CustomerID` removed
-  - Returned transactions excluded (`Quantity <= 0`)
-  - Invalid price records filtered (`UnitPrice <= 0`)
-- Feature engineering:
+- 데이터 검증:
+  - `CustomerID` 누락 행 제거
+  - 반품 트랜잭션 제외 (`Quantity <= 0`)
+  - 유효하지 않은 가격 레코드 필터링 (`UnitPrice <= 0`)
+- 피처 엔지니어링:
   - `Sales = Quantity × UnitPrice`
-- Aggregation:
-  - **Recency**: Days since last purchase
-  - **Frequency**: Number of distinct orders per customer
-  - **Monetary**: Total spending per customer
+- 집계:
+  - **Recency**: 마지막 구매 이후 경과 일수
+  - **Frequency**: 고객별 주문 수
+  - **Monetary**: 고객별 총 구매 금액
 
-### Design Rationale
+### 설계 근거
 
-- Raw data is preserved at the transaction level for traceability
-- Aggregated data is separated into a dedicated analytical table for performance and clarity
-- SQL-based transformation ensures reproducibility and consistency in analytical results
-- The data mart structure supports scalable customer segmentation and downstream analytics
+- 원시 데이터는 추적 가능성을 위해 트랜잭션 단위로 보존
+- 집계 데이터는 성능과 명확성을 위해 별도 분석 테이블로 분리
+- SQL 기반 변환으로 분석 결과의 재현성과 일관성 보장
+- 데이터마트 구조는 확장 가능한 고객 세그멘테이션과 후속 분석을 지원
 
-## 5. Project Summary
+## 5. 프로젝트 요약
 
-**Problem:** Budget inefficiency from applying uniform marketing regardless of customer value
+**문제:** 고객별 가치 차이를 무시한 일괄 마케팅으로 인한 예산 비효율
 
-**Approach:** RFM-based behavioral analysis → 9-segment classification → group-level strategy
+**접근:** RFM 기반 고객 행동 분석 → 9개 세그먼트 분류 → 그룹별 전략 도출
 
-**Outcome:**
-- Built an end-to-end data pipeline combining Python and MySQL
-- Performed data cleaning in Python and SQL-based validation and aggregation
-- Designed and constructed a customer-level RFM data mart
-- Applied RFM analysis to segment customers into 9 groups based on purchasing behavior
-- Identified high-value customer groups and generated actionable business insights
+**결과:**
+- Python과 MySQL을 결합한 end-to-end 데이터 파이프라인 구축
+- Python으로 데이터 정제, SQL로 검증 및 집계 수행
+- 고객 단위 RFM 데이터마트 설계 및 구축
+- RFM 분석을 통한 구매 행동 기반 고객 세그멘테이션 (9개 세그먼트)
+- 고가치 고객 그룹 식별 및 비즈니스 인사이트 도출
 
-## 6. Tech Stack
+## 6. 기술 스택
 
-- **Language**: Python, SQL
-- **Data Processing**: Pandas, NumPy
-- **Database**: MySQL
-- **ORM / Connection**: SQLAlchemy, PyMySQL
-- **Visualization**: Matplotlib, Tableau
-- **Environment Management**: python-dotenv
-- **Notebook**: Jupyter Notebook
-- **Development Environment**: VS Code
-- **Concepts**: Data Cleaning, Data Transformation, Data Validation, Data Mart Design
+- **언어**: Python, SQL
+- **데이터 처리**: Pandas, NumPy
+- **데이터베이스**: MySQL
+- **ORM / 연결**: SQLAlchemy, PyMySQL
+- **시각화**: Matplotlib, Tableau
+- **환경 관리**: python-dotenv
+- **노트북**: Jupyter Notebook
+- **개발 환경**: VS Code
+- **주요 개념**: 데이터 정제, 데이터 변환, 데이터 검증, 데이터마트 설계
 
-## 7. Dataset
+## 7. 데이터셋
 
-This project uses the Online Retail dataset, which contains transactional records of a UK-based online retail company.
+이 프로젝트는 영국 기반 온라인 리테일 기업의 트랜잭션 기록을 담은 Online Retail 데이터셋을 사용합니다.
 
-The dataset captures detailed purchase history at the transaction level, making it suitable for customer behavior analysis and RFM-based segmentation.
+고객 행동 분석 및 RFM 기반 세그멘테이션에 적합한 트랜잭션 단위 구매 이력을 포함합니다.
 
-Key columns include:
-- `InvoiceNo`: Order identifier
-- `StockCode`: Product code
-- `Description`: Product name
-- `Quantity`: Number of items purchased
-- `InvoiceDate`: Transaction timestamp
-- `UnitPrice`: Price per item
-- `CustomerID`: Customer identifier
-- `Country`: Customer country
+주요 컬럼:
+- `InvoiceNo`: 주문 식별자
+- `StockCode`: 상품 코드
+- `Description`: 상품명
+- `Quantity`: 구매 수량
+- `InvoiceDate`: 트랜잭션 타임스탬프
+- `UnitPrice`: 단가
+- `CustomerID`: 고객 식별자
+- `Country`: 고객 국가
 
-This dataset enables the calculation of customer-level metrics such as purchase recency, order frequency, and total spending, which are essential for building a customer-level analytical data mart.
+고객 단위 분석 데이터마트 구축에 필요한 구매 최근성, 주문 빈도, 총 구매 금액 계산이 가능한 데이터셋입니다.
 
-## 8. Data Processing Pipeline
+## 8. 데이터 처리 파이프라인
 
-The project follows an end-to-end data pipeline from raw data ingestion to analytical data mart construction:
+원시 데이터 수집부터 분석용 데이터마트 구축까지의 end-to-end 파이프라인:
 
-1. Load raw transaction data from CSV
-2. Perform data cleaning and validation using Python
-3. Create a derived `Sales` column (`Quantity * UnitPrice`)
-4. Load the cleaned dataset into MySQL
-5. Apply SQL-based transformation and metric validation
-6. Aggregate transaction-level data into a customer-level RFM data mart (`rfm`)
-7. Perform analysis, segmentation, and visualization in Python and Tableau
+1. CSV에서 원시 트랜잭션 데이터 로드
+2. Python으로 데이터 정제 및 검증
+3. `Sales` 파생 컬럼 생성 (`Quantity * UnitPrice`)
+4. 정제 데이터셋을 MySQL에 적재
+5. SQL 기반 변환 및 지표 검증
+6. 트랜잭션 데이터를 고객 단위 RFM 데이터마트(`rfm`)로 집계
+7. Python 및 Tableau에서 분석, 세그멘테이션, 시각화
 
-## 9. Data Preprocessing & Transformation
+## 9. 데이터 전처리 & 변환
 
-Data processing was performed in two stages using both Python and SQL to ensure data quality and analytical consistency.
+데이터 품질과 분석 일관성을 보장하기 위해 Python과 SQL 두 단계로 처리했습니다.
 
-### Python (Data Cleaning)
+### Python (데이터 정제)
 
-The raw dataset was cleaned before loading into MySQL.
+MySQL 적재 전 원시 데이터셋을 정제했습니다.
 
-- Converted `InvoiceDate` to datetime format
-- Removed rows with missing `CustomerID`
-- Excluded returned transactions (`Quantity <= 0`)
-- Removed invalid price records (`UnitPrice <= 0`)
-- Converted `CustomerID` to integer type
-- Created a new `Sales` column as `Quantity * UnitPrice`
-- Retained 5,192 exact duplicate rows (1.30% of transactions, 0.27% of revenue): all occur within the same invoice, and without line-level IDs they cannot be confirmed as errors. Sensitivity check — removing them shifts the Champions customer share by only 0.12%p (22.18% → 22.06%) and changes no conclusions.
+- `InvoiceDate`를 datetime 형식으로 변환
+- `CustomerID` 누락 행 제거
+- 반품 트랜잭션 제외 (`Quantity <= 0`)
+- 유효하지 않은 가격 레코드 제거 (`UnitPrice <= 0`)
+- `CustomerID`를 정수형으로 변환
+- `Sales` 컬럼 생성 (`Quantity * UnitPrice`)
+- 완전 중복 5,192행(트랜잭션의 1.30%, 매출의 0.27%)은 유지: 모두 같은 주문 안에서 발생했고, 주문 내 줄 번호가 없어 오류인지 확정할 수 없음. 민감도 점검 결과, 제거해도 Champions 고객 비중 변화는 0.12%p(22.18% → 22.06%)에 그쳐 결론은 바뀌지 않음.
 
-The preprocessing logic is implemented in `scripts/preprocess_and_load.py`.
+전처리 로직: `scripts/preprocess_and_load.py`
 
-### SQL (Data Validation & Aggregation)
+### SQL (데이터 검증 & 집계)
 
-SQL was used to validate metrics and construct the analytical dataset.
+SQL로 지표를 검증하고 분석 데이터셋을 구축했습니다.
 
-- Reapplied filtering conditions using a CTE (`clean_data`)
-- Validated each RFM metric independently
-- Applied aggregation logic using `GROUP BY`
-- Constructed the final customer-level data mart (`rfm`)
+- CTE(`clean_data`)를 사용하여 필터링 조건 재적용
+- 각 RFM 지표 독립 검증
+- `GROUP BY`를 사용한 집계 로직 적용
+- 최종 고객 단위 데이터마트(`rfm`) 구축
 
-These steps ensure consistent business logic and improve the reliability of the analysis.
+일관된 비즈니스 로직 보장 및 분석 신뢰성 향상을 위한 단계입니다.
 
-## 10. RFM Analysis (Python & SQL)
+## 10. RFM 분석 (Python & SQL)
 
-Customer-level R, F, and M values were calculated in both Python and MySQL and cross-checked; scoring (including `log1p`) and segmentation were performed in Python only.
+고객 단위 R·F·M 원값을 Python과 MySQL 양쪽에서 계산해 교차 검증했고, 점수화(`log1p` 포함)와 세그멘테이션은 Python에서만 수행했습니다.
 
-- **Recency**: Days since the customer's most recent purchase
-- **Frequency**: Number of distinct orders per customer
-- **Monetary**: Total purchase amount per customer
+- **Recency**: 고객의 가장 최근 구매 이후 경과 일수
+- **Frequency**: 고객별 주문 수
+- **Monetary**: 고객별 총 구매 금액
 
-### Python-based Analysis
+### Python 기반 분석
 
-- Performed exploratory analysis using Pandas in Jupyter Notebook
-- Applied scoring and segmentation logic for flexible analysis
-- **Applied log transformation (`log1p`) to Monetary before computing M_score** — prevents extreme outliers (e.g., a customer who spent £77,183 in a single order) from distorting the score distribution
+- Jupyter Notebook에서 Pandas로 탐색적 분석 수행
+- 유연한 분석을 위한 스코어링 및 세그멘테이션 로직 적용
+- **Monetary 로그 변환 (`log1p`) 적용** — 극단적 이상치(예: 1회 구매로 £77,183 지출 고객)가 스코어 분포를 왜곡하는 것을 방지하기 위해 `M_score` 계산 전 로그 변환 수행
 
-### SQL-based Analysis
+### SQL 기반 분석
 
-Calculated raw R, F, and M values in MySQL in two steps (no scoring or segmentation):
+MySQL에서 두 단계로 R·F·M 원값을 계산했습니다 (점수화·세그멘테이션 제외):
 
-1. **Metric-level validation**
-   - `sql/01_calculate_monetary.sql`: Validates total spending per customer
-   - `sql/02_calculate_frequency.sql`: Validates order count per customer
-   - `sql/03_calculate_recency.sql`: Validates recency based on latest transaction
+1. **지표 단위 검증**
+   - `sql/01_calculate_monetary.sql`: 고객별 총 구매액 검증
+   - `sql/02_calculate_frequency.sql`: 고객별 주문 수 검증
+   - `sql/03_calculate_recency.sql`: 최근 트랜잭션 기반 Recency 검증
 
-2. **Data mart construction**
-   - `sql/04_create_rfm_table.sql`: Integrates all metrics and creates the final `rfm` table
+2. **데이터마트 구축**
+   - `sql/04_create_rfm_table.sql`: 모든 지표를 통합하여 최종 `rfm` 테이블 생성
 
-**Cross-checked against Python: R and F match for all 4,338 customers, and M matches for all but 4** (up to £0.001 difference because `UnitPrice` is stored as `DECIMAL(10,2)`; no effect on scores or segments). Recency uses `TIMESTAMPDIFF(DAY, …)` to match Python's `.days` (elapsed days rounded down).
+**Python 결과와 교차 검증: 고객 4,338명 전원의 R·F 값이 일치하고, M 값은 4명을 제외하고 일치**(단가가 `DECIMAL(10,2)`로 저장되어 최대 £0.001 차이, 점수·세그먼트 영향 없음). Recency는 Python의 `.days`와 같도록 `TIMESTAMPDIFF(DAY, …)`로 계산(24시간 단위 내림).
 
-## 11. Customer Segmentation
+## 11. 고객 세그멘테이션
 
-Customers are classified into 9 segments based on their R, F, and M scores (each scored 1–5).
-Segmentation logic references score columns directly — not string indexing — for stability and clarity.
+R·F·M 점수(각 1~5점)를 조합하여 고객을 9개 세그먼트로 분류했습니다.
+문자열 인덱싱이 아닌 점수 컬럼을 직접 참조하는 조건으로 분류 로직의 안정성과 명확성을 확보했습니다.
 
-| Segment | R | F | M | Description |
+| 세그먼트 | R | F | M | 의미 |
 |---|---|---|---|---|
-| **Champions** | ≥ 4 | ≥ 4 | ≥ 4 | Best customers across all dimensions |
-| **Can't Lose** | = 1 | ≥ 4 | ≥ 4 | Former top customers who have churned |
-| **At Risk** | ≤ 2 | ≥ 3 | ≥ 3 | High-value customers showing churn signals |
-| **Loyal** | ≥ 3 | ≥ 4 | ≥ 3 | Consistent, frequent, and valuable buyers |
-| **Potential Loyalist** | ≥ 4 | ≥ 2 | ≥ 2 | Recent buyers with growth potential |
-| **New Customer** | ≥ 4 | = 1 | — | First-time buyers with recent activity |
-| **Need Attention** | = 3 | ≥ 2 | ≥ 2 | Mid-tier customers at risk of stagnation |
-| **Hibernating** | ≤ 2 | ≤ 2 | — | Inactive customers with low activity |
-| **Normal** | All others | | | General customers with average behavior |
+| **Champions** | ≥ 4 | ≥ 4 | ≥ 4 | 최고 우량 고객 |
+| **Can't Lose** | = 1 | ≥ 4 | ≥ 4 | 과거 최상위였으나 이탈한 고객 |
+| **At Risk** | ≤ 2 | ≥ 3 | ≥ 3 | 이탈 진행 중인 우량 고객 |
+| **Loyal** | ≥ 3 | ≥ 4 | ≥ 3 | 꾸준히 자주·많이 구매 |
+| **Potential Loyalist** | ≥ 4 | ≥ 2 | ≥ 2 | 최근 구매, 성장 가능성 높음 |
+| **New Customer** | ≥ 4 | = 1 | — | 최근 첫 구매 고객 |
+| **Need Attention** | = 3 | ≥ 2 | ≥ 2 | 중간 수준에 머무는 고객 |
+| **Hibernating** | ≤ 2 | ≤ 2 | — | 오래되고 활동 거의 없음 |
+| **Normal** | 위 조건 미해당 | | | 평균적인 일반 고객 |
 
-## 12. Analysis & Visualization
+## 12. 분석 & 시각화
 
 ### Python
 
-Python was used for exploratory analysis and preliminary validation of customer segmentation results.
+Python으로 탐색적 분석과 고객 세그멘테이션 결과의 사전 검증을 수행했습니다.
 
-- Visualized the distribution of 9 customer segments
-- Analyzed RFM-based segment proportions
-- Validated segmentation logic before dashboard development
+- 9개 세그먼트 분포 시각화
+- RFM 기반 세그먼트 분포 분석
+- 대시보드 개발 전 세그멘테이션 로직 기준 검증
 
-![Segment Distribution](images/segment_distribution.png)
+![세그먼트 분포](images/segment_distribution.png)
 
 ### Tableau
 
-An interactive Tableau dashboard was developed to provide a comprehensive view of customer segmentation and revenue contribution.
+고객 세그멘테이션과 매출 기여도를 종합적으로 보여주는 인터랙티브 Tableau 대시보드를 개발했습니다.
 
-The dashboard includes:
+대시보드 포함 내용:
 
-- Customer Segment Distribution (9 segments, color-coded)
-- RFM Scatter Analysis
-- Revenue Contribution by Segment
+- 고객 세그먼트 분포 (9개 세그먼트, 색상 구분)
+- RFM 산점도 분석
+- 세그먼트별 매출 기여도
 
-Users can interact with filters to explore customer behavior, identify high-value segments, and analyze revenue concentration patterns.
+필터를 통해 고객 행동 탐색, 고가치 세그먼트 식별, 매출 집중도 분석이 가능합니다.
 
-![RFM Dashboard](images/dashboard.png)
+![RFM 대시보드](images/dashboard.png)
 
-## 13. Results & Insights
+## 13. 결과 & 인사이트
 
-Key findings from the analysis include:
+주요 분석 결과:
 
-- **Champions** account for 22.18% of customers but drive 65.19% of revenue — confirming that each Champions customer generates about 2.9x the revenue of an average customer
-- **Can't Lose** customers were once top buyers and require immediate Win-back campaigns
-- **At Risk** customers are trending toward churn — retention action is urgent
-- **Potential Loyalists** recently purchased and show strong upsell and membership conversion potential
-- Sales are highly concentrated in a single market, suggesting geographic dependency risk
+- **Champions** 세그먼트는 소수(22.18%)이지만 총 매출의 65.19%를 차지 — 1인당 매출이 평균 고객의 약 2.9배임을 수치로 확인
+- **Can't Lose** 세그먼트는 과거 최상위 고객으로, 즉각적인 Win-back 캠페인 대상
+- **At Risk** 세그먼트는 이탈이 진행 중이어서 리텐션 조치가 시급
+- **Potential Loyalist**는 최근 구매 고객으로 업셀 및 멤버십 전환 가능성이 높음
+- 매출이 특정 단일 시장에 집중되어 있어 지역 의존도 리스크 존재
 
-These results confirm a strong imbalance in customer value distribution, where a small segment drives a significant portion of total revenue.
+소수의 고객이 매출의 상당 부분을 차지하는 강한 고객 가치 불균형이 확인됩니다.
 
-### Segment Action Matrix
+### 세그먼트별 액션 매트릭스
 
-| Segment | Business Goal | Recommended Action | KPI |
+| 세그먼트 | 비즈니스 목표 | 추천 액션 | KPI |
 |---|---|---|---|
-| **Champions** | Retain & convert to brand ambassadors | VIP loyalty program, early product access, encourage reviews & referrals | Churn rate < 5%, repeat purchase rate |
-| **Can't Lose** | Immediate Win-back | One-to-one Win-back offer, personalized re-engagement message, dedicated CS outreach | Win-back conversion rate, post-return repurchase rate |
-| **At Risk** | Prevent churn | Urgent personalized coupon, churn reason survey, re-visit email sequence | Churn rate reduction, retention rate |
-| **Loyal** | Nudge toward Champions | Upsell/cross-sell campaigns, membership tier upgrade offer | Champions conversion rate, average order value |
-| **Potential Loyalist** | Drive repeat purchase & convert to Loyal | Membership sign-up incentive, repeat purchase rewards, related product recommendations | Repurchase rate, Loyal conversion rate |
-| **New Customer** | Drive second purchase | Onboarding email sequence, second-purchase coupon, brand story content | Repurchase rate within 30 days |
-| **Need Attention** | Increase purchase frequency | Seasonal promotions, limited-time discounts, purchase trigger campaigns | Purchase frequency growth rate |
-| **Hibernating** | Low-cost reactivation or exclusion | Single low-cost batch campaign; exclude from active campaigns if no response | Reactivation rate, campaign ROI |
-| **Normal** | Maintain baseline engagement | Regular newsletter, general promotions | Purchase retention rate |
+| **Champions** | 유지 & 브랜드 앰배서더화 | VIP 로열티 프로그램, 신제품 얼리액세스, 리뷰·추천 유도 | 이탈율 < 5%, 재구매율 유지 |
+| **Can't Lose** | 즉각적 Win-back | 1:1 개별 Win-back 혜택 제안, 개인화 재방문 메시지, 전담 CS 연결 | Win-back 전환율, 복귀 후 재구매율 |
+| **At Risk** | 이탈 방지 | 긴급 개인화 쿠폰, 이탈 원인 설문, 재방문 유도 이메일 | 이탈율 감소, 리텐션율 |
+| **Loyal** | Champions 전환 유도 | 업셀·크로스셀 캠페인, 멤버십 티어 업그레이드 제안 | Champions 전환율, 객단가 증가 |
+| **Potential Loyalist** | 재구매 유도 & Loyal 전환 | 멤버십 가입 유도, 반복 구매 혜택, 연관 상품 추천 | 재구매율, Loyal 전환율 |
+| **New Customer** | 2차 구매 유도 | 온보딩 이메일 시퀀스, 2차 구매 쿠폰, 브랜드 스토리 전달 | 30일 내 재구매율 |
+| **Need Attention** | 구매 빈도 증가 | 시즌 프로모션, 한정 할인, 구매 동기 자극 캠페인 | 구매 빈도 증가율 |
+| **Hibernating** | 저비용 재활성화 or 제외 | 저비용 일괄 캠페인 1회, 무반응 시 마케팅 제외 | 재활성화율, 캠페인 ROI |
+| **Normal** | 구매 지속 유지 | 정기 뉴스레터, 일반 프로모션 | 구매 유지율 |
 
-### Business Impact
+### 비즈니스 임팩트
 
-- **Champions churn risk**: 22.18% of customers account for 65.19% of revenue. A 1%p drop in Champions retention translates to roughly a 0.65%p loss in total revenue — about 2.9x the loss from the same number of average customers churning
-- **At Risk urgency**: Customers with high past frequency and spending scores (F≥3, M≥3) but a low Recency score (R≤2), signaling churn risk. This segment holds 7.73% of revenue (9.89% of customers), with an average Recency of 136.3 days versus 92.5 days overall. Without immediate retention action, this revenue share is at risk
-- **Can't Lose recovery value**: Customers with high past frequency and spending scores (F≥4, M≥4) who have not purchased for an average of 232.3 days. The segment is small — 25 customers (0.58%) contributing 0.60% of revenue, with per-customer revenue about 1.0x the average — so targeted one-to-one Win-back outreach is more practical than a broad campaign
-- **Single-market concentration risk**: Revenue concentrated in one geographic market means demand shifts there directly affect overall business performance. Geographic diversification or ongoing concentration monitoring is recommended
+- **Champions 이탈 리스크**: 전체 고객의 22.18%가 매출의 65.19%를 담당. Champions 고객 1%p 이탈 시 전체 매출의 약 0.65%p 손실 — 같은 수의 평균 고객이 이탈할 때보다 약 2.9배 큰 손실
+- **At Risk 긴급도**: 과거 구매 빈도·금액 점수가 높지만(F≥3, M≥3) Recency 점수가 낮아(R≤2) 이탈 위험이 있는 고객군. 매출의 7.73%(고객의 9.89%)를 차지하며, 평균 Recency는 136.3일로 전체 평균 92.5일보다 김. 즉각적인 리텐션 조치가 없으면 이 매출 비중을 잃을 위험이 있음
+- **Can't Lose 복구 가치**: 과거 구매 빈도·금액 점수가 높았던(F≥4, M≥4) 고객으로, 평균 232.3일간 구매가 없음. 25명(고객의 0.58%), 매출 비중 0.60%, 1인당 매출은 평균 고객의 약 1.0배로 규모가 작아, 대규모 캠페인보다 1:1 개별 Win-back 접촉이 현실적임
+- **단일 시장 의존 리스크**: 매출이 특정 지역에 집중되어 있어 해당 시장의 수요 변화가 전체 매출에 직접 영향. 지역 다변화 전략 또는 집중도 모니터링 필요
 
-### Priority Recommendations
+### 우선순위 제언
 
-Based on this analysis, three actions are recommended as immediate priorities.
+이 분석을 바탕으로 다음 세 가지를 우선 실행할 것을 제안합니다.
 
-**① Defend Champions revenue**
-This segment drives 65% of total revenue despite representing just 22% of customers.
-Because retaining this group protects the largest share of revenue,
-a VIP loyalty program and dedicated retention management should be the top priority.
+**① Champions 이탈 방어**
+고객의 22%가 전체 매출의 65%를 담당하는 핵심 고객군입니다.
+이 고객군을 지키는 것이 가장 큰 매출 비중을 보호하는 일이므로,
+VIP 로열티 프로그램과 전담 관리를 통한 이탈 방어를 최우선 과제로 둡니다.
 
-**② Act urgently on At Risk & Can't Lose**
-These customers had high past frequency and spending scores but now have low Recency scores (R≤2).
-We recommend starting personalized Win-back outreach early, before their Recency grows longer.
+**② At Risk & Can't Lose 즉각 대응**
+과거 구매 빈도·금액 점수는 높았지만 현재 Recency 점수가 낮은(R≤2) 고객군입니다.
+Recency가 더 길어지기 전에 개인화 Win-back 접촉을 시작할 것을 권장합니다.
 
-**③ Develop Potential Loyalists & New Customers**
-These segments show high repurchase potential.
-Onboarding sequences and membership incentives can build
-the next generation of Champions early.
+**③ Potential Loyalist & New Customer 육성**
+재구매 가능성이 높은 잠재 고객군입니다.
+멤버십과 온보딩 전략으로 Champions 파이프라인을 조기에 확보합니다.
 
-## 14. Project Structure
+## 14. 프로젝트 구조
 
 ```text
 online-retail-rfm-analysis/
-├── data/                 # Raw dataset and exported RFM data
+├── data/                 # 원시 데이터셋 및 RFM 내보내기 데이터
 │   ├── online_retail.csv
 │   └── rfm_tableau.csv
-├── images/               # Visualization outputs (Python analysis & Tableau dashboard)
+├── images/               # 시각화 결과물 (Python 분석 & Tableau 대시보드)
 │   ├── segment_distribution.png
 │   ├── dashboard.png
 │   └── data_model_erd.png
-├── notebooks/            # Exploratory analysis and RFM segmentation
+├── notebooks/            # 탐색적 분석 및 RFM 세그멘테이션
 │   └── rfm_analysis.ipynb
-├── scripts/              # Python-based data cleaning and loading pipeline
+├── scripts/              # Python 기반 데이터 정제 및 적재 파이프라인
 │   └── preprocess_and_load.py
-├── sql/                  # SQL queries for metric validation and RFM data mart construction
+├── sql/                  # 지표 검증 및 RFM 데이터마트 구축 SQL 쿼리
 │   ├── 00_create_online_retail.sql
 │   ├── 01_calculate_monetary.sql
 │   ├── 02_calculate_frequency.sql
 │   ├── 03_calculate_recency.sql
 │   └── 04_create_rfm_table.sql
-├── tableau/              # Tableau dashboard
+├── tableau/              # Tableau 대시보드
 │   └── rfm_dashboard.twbx
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
-├── README.md
-└── README.ko.md
+└── README.md
 ```
 
-## 15. How to Run
+## 15. 실행 방법
 
-### 1) Clone the repository
+### 1) 저장소 클론
 
 ```bash
 git clone https://github.com/hyunsung6608/online-retail-rfm-analysis.git
 cd online-retail-rfm-analysis
 ```
 
-### 2) Install dependencies
+### 2) 의존성 설치
 
 ```bash
 pip install -r requirements.txt
 ```
 
-> **Requirement:** This project requires **MySQL 8.0+** because the SQL scripts use Common Table Expressions (CTEs).
+> **요구사항:** SQL 스크립트에서 CTE를 사용하므로 **MySQL 8.0 이상**이 필요합니다.
 
-### 3) Prepare MySQL database
+### 3) MySQL 데이터베이스 준비
 
-Create a database named `retail_project`:
+`retail_project` 데이터베이스 생성:
 
 ```bash
 mysql -u your_username -p
@@ -363,9 +362,9 @@ mysql -u your_username -p
 CREATE DATABASE retail_project;
 ```
 
-### 4) Set up environment variables
+### 4) 환경 변수 설정
 
-Create a `.env` file based on `.env.example`:
+`.env.example`을 기반으로 `.env` 파일 생성:
 
 ```bash
 # macOS / Linux
@@ -375,7 +374,7 @@ cp .env.example .env
 copy .env.example .env
 ```
 
-Edit the `.env` file:
+`.env` 파일 수정:
 
 ```env
 DB_USER = your_username
@@ -385,24 +384,24 @@ DB_PORT = 3306
 DB_NAME = retail_project
 ```
 
-### 5) Create table schema
+### 5) 테이블 스키마 생성
 
 ```bash
 mysql -u your_username -p retail_project < sql/00_create_online_retail.sql
 ```
 
-### 6) Run data preprocessing pipeline
+### 6) 데이터 전처리 파이프라인 실행
 
 ```bash
 python scripts/preprocess_and_load.py
 ```
 
-* Cleans raw data using Python
-* Loads processed data into MySQL
+* Python으로 원시 데이터 정제
+* 정제된 데이터를 MySQL에 적재
 
-### 7) Execute SQL pipeline
+### 7) SQL 파이프라인 실행
 
-Run the SQL files in order:
+아래 순서로 SQL 파일 실행:
 
 ```text
 01_calculate_monetary.sql
@@ -411,21 +410,21 @@ Run the SQL files in order:
 04_create_rfm_table.sql
 ```
 
-* Steps 1–3: Validate each RFM metric
-* Step 4: Construct the final customer-level data mart (`rfm`)
+* 1~3단계: 각 RFM 지표 검증
+* 4단계: 최종 고객 단위 데이터마트(`rfm`) 구축
 
-### 8) Run analysis notebook
+### 8) 분석 노트북 실행
 
 ```bash
 cd notebooks
 jupyter notebook
 ```
 
-Open `rfm_analysis.ipynb` to explore results and segmentation.
+`rfm_analysis.ipynb`를 열어 결과 및 세그멘테이션을 확인합니다.
 
-## 16. Future Improvements
+## 16. 향후 개선 사항
 
-- Automate the Python–SQL R/F/M cross-check so that future data reloads are verified without manual comparison
-- Build an automated data pipeline to enable periodic updates of customer segmentation and improve scalability
-- Extend the analytical model by incorporating additional features such as Customer Lifetime Value (CLV) and churn prediction
-- Improve data modeling by introducing additional dimensions (e.g., product or time) to support more advanced analysis
+- 데이터 재적재 시 수동 비교 없이 검증되도록 Python–SQL 간 R·F·M 교차 검증 자동화
+- 고객 세그멘테이션 주기적 업데이트를 위한 자동화 파이프라인 구축
+- Customer Lifetime Value(CLV) 및 이탈 예측 등 추가 피처로 분석 모델 확장
+- 상품 또는 시간 차원 추가를 통한 데이터 모델링 고도화
